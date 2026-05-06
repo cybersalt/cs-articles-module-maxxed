@@ -1,5 +1,14 @@
 <h2>Cybersalt Articles Module Maxxed - Changelog</h2>
 
+<h3>Version 1.1.1 - 2026-05-06</h3>
+
+<h4>Security / Hardening</h4>
+<ul>
+    <li><strong>Defence-in-depth on the params writer.</strong> If <code>#__extensions.params</code> is ever non-empty but contains invalid JSON (only possible via direct DB tampering — Joomla itself never produces this state), <code>writeLastSeenJoomlaVersion()</code> now logs a warning and bails out instead of overwriting the corrupted-but-real settings blob with a minimal <code>{"last_seen_joomla":"..."}</code> object. Identified as INFO-2 in the v1.1.0 pre-announcement security review.</li>
+</ul>
+
+<hr>
+
 <h3>Version 1.1.0 - 2026-05-06</h3>
 
 <h4>New</h4>

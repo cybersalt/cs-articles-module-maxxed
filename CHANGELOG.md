@@ -4,6 +4,12 @@ All notable changes to **Cybersalt Articles Module Maxxed** are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-05-06
+
+### 🔐 Security / Hardening
+
+- **Defence-in-depth on the params writer.** If `#__extensions.params` is ever non-empty but contains invalid JSON (only possible via direct DB tampering — Joomla itself never produces this state), `writeLastSeenJoomlaVersion()` now logs a warning and bails out instead of overwriting the corrupted-but-real settings blob with a minimal `{"last_seen_joomla":"..."}` object. Empty params row → still safely treated as `[]` and written as before. Identified as INFO-2 in the v1.1.0 pre-announcement security review.
+
 ## [1.1.0] - 2026-05-06
 
 ### 🚀 New

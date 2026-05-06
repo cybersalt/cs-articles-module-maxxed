@@ -30,7 +30,7 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 
     private const PARAM_KEY = 'cs_skip_articles';
 
-    private const PLUGIN_VERSION = '1.1.0';
+    private const PLUGIN_VERSION = '1.1.1';
 
     private const SUPPORTED_MODULES = [
         'mod_articles',
@@ -374,7 +374,28 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
             ->where($db->quoteName('element') . ' = ' . $db->quote('csarticlesmodulemaxxed'));
 
         $paramsJson = (string) $db->setQuery($query)->loadResult();
-        $params     = $this->decodeParams($paramsJson);
+
+        // Defence-in-depth: if the row exists but its params are corrupted
+        // (non-empty but invalid JSON) we'd otherwise overwrite a real
+        // settings blob with our minimal {last_seen_joomla:...} object,
+        // losing every other plugin setting. Bail out instead.
+        if ($paramsJson !== '') {
+            $decoded = json_decode($paramsJson, true);
+
+            if (!\is_array($decoded)) {
+                Log::add(
+                    'csarticlesmodulemaxxed: refusing to write last_seen_joomla — existing params row is invalid JSON',
+                    Log::WARNING,
+                    'plg_system_csarticlesmodulemaxxed'
+                );
+
+                return;
+            }
+
+            $params = $decoded;
+        } else {
+            $params = [];
+        }
 
         $params['last_seen_joomla'] = $version;
 
