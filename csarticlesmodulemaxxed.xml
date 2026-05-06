@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later</license>
     <authorEmail>support@cybersalt.com</authorEmail>
     <authorUrl>https://cybersalt.com</authorUrl>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <description>PLG_SYSTEM_CSARTICLESMODULEMAXXED_XML_DESCRIPTION</description>
     <namespace path="src">Cybersalt\Plugin\System\Csarticlesmodulemaxxed</namespace>
 
@@ -51,6 +51,10 @@
         <language tag="cs-CZ">language/cs-CZ/plg_system_csarticlesmodulemaxxed.sys.ini</language>
         <language tag="sv-SE">language/sv-SE/plg_system_csarticlesmodulemaxxed.ini</language>
         <language tag="sv-SE">language/sv-SE/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="nb-NO">language/nb-NO/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="nb-NO">language/nb-NO/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="nn-NO">language/nn-NO/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="nn-NO">language/nn-NO/plg_system_csarticlesmodulemaxxed.sys.ini</language>
     </languages>
 
     <updateservers>
@@ -71,6 +75,28 @@
                     <option value="mod_articles_category">PLG_SYSTEM_CSARTICLESMODULEMAXXED_TARGET_MOD_ARTICLES_CATEGORY</option>
                     <option value="mod_articles_latest">PLG_SYSTEM_CSARTICLESMODULEMAXXED_TARGET_MOD_ARTICLES_LATEST</option>
                 </field>
+
+                <field
+                    name="notify_on_joomla_update"
+                    type="radio"
+                    layout="joomla.form.field.radio.switcher"
+                    label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_NOTIFY_LABEL"
+                    description="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_NOTIFY_DESC"
+                    default="1"
+                    filter="integer"
+                >
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <!-- Internal: last seen Joomla short version. Hidden field so it survives the
+                     admin form save (Joomla's filter strips unknown params on save). -->
+                <field
+                    name="last_seen_joomla"
+                    type="hidden"
+                    default=""
+                    filter="string"
+                />
             </fieldset>
 
             <fieldset name="support" label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELDSET_SUPPORT_LABEL">

@@ -4,6 +4,33 @@ All notable changes to **Cybersalt Articles Module Maxxed** are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-05-06
+
+### 🚀 New
+
+- **Joomla-version-change watch** — when Joomla itself is upgraded on the site, the plugin sends a one-time email to every active Super User reminding them to verify the plugin still works on the new Joomla version. The email includes what to check, where to grab a newer plugin version (GitHub releases), how to file an issue (GitHub issues), and how to contact the configured support address. Steady-state cost is one in-memory string compare per admin request; DB+email work runs only on the rare moment Joomla actually changes versions.
+- **Notify opt-out** — *Email Super Users when Joomla is updated* toggle in the plugin's basic settings (default Yes).
+- **17-language coverage** — translations now ship for the full Cybersalt-target language list: en-GB (native), nl-NL, de-DE, es-ES, fr-FR, it-IT, pt-BR, ru-RU, pl-PL, ja-JP, zh-CN, tr-TR, el-GR, cs-CZ, sv-SE, **nb-NO** (new), **nn-NO** (new). Non-English files are AI-translated with native-speaker review welcome via PR.
+
+### 🌍 Norwegian
+
+- Added Norwegian Bokmål (nb-NO) and Nynorsk (nn-NO) — partly a Cybersalt-customer language, partly a tribute to **Bjørn Ove Bremnes**, the Norwegian whose original "wouldn't it be nice if Joomla's articles module had this" wish became this plugin.
+
+### 🔧 Improvements
+
+- Provider now wires `DatabaseInterface` into the plugin so the new version-watch can query Super Users without going through `Factory::getDbo()`.
+
+### 📦 Compatibility
+
+- Joomla 5.0+ and Joomla 6.0+ native (no Backward-Compat plugin required).
+- PHP 8.1+.
+
+### 🙌 Credits
+
+- **Bjørn Ove Bremnes** — for wishing an articles offset was a feature in Joomla's core articles module. This plugin (and the Norwegian translations in this release) is that wish, productionised.
+- **The Basic Joomla Tutorials channel family** — for hosting and helping vibe-code this during a live stream.
+- **Tim Davis ([Cybersalt](https://cybersalt.com))** — author / maintainer.
+
 ## [1.0.0] - 2026-05-06
 
 ### 🚀 New
@@ -29,9 +56,3 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Joomla 5.0+ and Joomla 6.0+ native (no `Behaviour - Backward Compatibility` plugin required).
 - PHP 8.1+.
-
-### 🙌 Credits
-
-- **Bjørn Ove Bremnes** — for wishing an articles offset was a feature in Joomla's core articles module. This plugin is that wish, productionised.
-- **The Basic Joomla Tutorials channel family** — for hosting and helping vibe-code this during a live stream.
-- **Tim Davis ([Cybersalt](https://cybersalt.com))** — author / maintainer.

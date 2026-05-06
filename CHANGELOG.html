@@ -1,5 +1,32 @@
 <h2>Cybersalt Articles Module Maxxed - Changelog</h2>
 
+<h3>Version 1.1.0 - 2026-05-06</h3>
+
+<h4>New</h4>
+<ul>
+    <li><strong>Joomla-version-change watch</strong> &mdash; when Joomla itself is upgraded on the site, the plugin sends a one-time email to every active Super User reminding them to verify the plugin still works on the new Joomla version. Includes what to check, where to grab a newer plugin version (GitHub releases), how to file an issue, and how to contact the configured support address. Steady-state cost is one in-memory string compare per admin request.</li>
+    <li><em>Email Super Users when Joomla is updated</em> opt-out toggle in the plugin's basic settings (default Yes).</li>
+    <li><strong>17-language coverage</strong> &mdash; translations now ship for the full Cybersalt-target language list: en-GB, nl-NL, de-DE, es-ES, fr-FR, it-IT, pt-BR, ru-RU, pl-PL, ja-JP, zh-CN, tr-TR, el-GR, cs-CZ, sv-SE, <strong>nb-NO</strong> (new), <strong>nn-NO</strong> (new). Non-English files are AI-translated with native-speaker review welcome via PR.</li>
+</ul>
+
+<h4>Norwegian</h4>
+<ul>
+    <li>Added Norwegian Bokm&aring;l (nb-NO) and Nynorsk (nn-NO) &mdash; partly a Cybersalt-customer language, partly a tribute to <strong>Bj&oslash;rn Ove Bremnes</strong>, whose original wish became this plugin.</li>
+</ul>
+
+<h4>Improvements</h4>
+<ul>
+    <li>Provider now wires <code>DatabaseInterface</code> into the plugin so the new version-watch can query Super Users without going through <code>Factory::getDbo()</code>.</li>
+</ul>
+
+<h4>Compatibility</h4>
+<ul>
+    <li>Joomla 5.0+ and Joomla 6.0+ native (no Backward-Compat plugin required).</li>
+    <li>PHP 8.1+.</li>
+</ul>
+
+<hr>
+
 <h3>Version 1.0.0 - 2026-05-06</h3>
 
 <h4>New</h4>
