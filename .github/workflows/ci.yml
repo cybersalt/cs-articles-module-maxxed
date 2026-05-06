@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: PHP lint + manifest validation
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['8.1', '8.3']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, json, libxml
+          coverage: none
+
+      - name: Lint every PHP file
+        run: |
+          set -e
+          ERR=0
+          while IFS= read -r -d '' file; do
+            if ! php -l "$file" > /dev/null 2>&1; then
+              echo "::error file=$file::PHP lint failure"
+              php -l "$file"
+              ERR=1
+            fi
+          done < <(find . -path ./vendor -prune -o -path ./node_modules -prune -o -name '*.php' -print0)
+          exit $ERR
+
+      - name: Validate manifest XML
+        run: |
+          set -e
+          for xml in csarticlesmodulemaxxed.xml updates.xml forms/skip-articles-field.xml; do
+            echo "Validating $xml ..."
+            php -r '
+              libxml_use_internal_errors(true);
+              $doc = new DOMDocument();
+              if (!$doc->load("'"$xml"'")) {
+                  foreach (libxml_get_errors() as $e) {
+                      fwrite(STDERR, $e->message);
+                  }
+                  exit(1);
+              }
+            '
+          done
+
+      - name: Validate language files (UTF-8 no BOM, key=value structure)
+        run: |
+          set -e
+          ERR=0
+          for f in language/*/*.ini; do
+            if head -c 3 "$f" | od -An -tx1 | grep -q 'ef bb bf'; then
+              echo "::error file=$f::language file has UTF-8 BOM (must be UTF-8 without BOM)"
+              ERR=1
+            fi
+            if grep -nP '^[A-Z][A-Z0-9_]*=' "$f" > /dev/null; then
+              :
+            else
+              echo "::error file=$f::no language keys found (expected KEY=\"value\" pairs)"
+              ERR=1
+            fi
+          done
+          exit $ERR
+
+  package:
+    name: Build install zip
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build zip
+        run: |
+          mkdir -p dist
+          zip -r dist/plg_system_csarticlesmodulemaxxed_ci.zip \
+            csarticlesmodulemaxxed.xml \
+            script.php \
+            services \
+            src \
+            forms \
+            language \
+            -x '*/.gitkeep'
+
+      - name: Verify zip structure
+        run: |
+          unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip
+          unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q csarticlesmodulemaxxed.xml
+          unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q services/provider.php
+          unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q src/Extension/Csarticlesmodulemaxxed.php
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: install-zip
+          path: dist/plg_system_csarticlesmodulemaxxed_ci.zip
+          retention-days: 14

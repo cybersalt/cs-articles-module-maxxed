@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+    <name>PLG_SYSTEM_CSARTICLESMODULEMAXXED</name>
+    <author>Cybersalt</author>
+    <creationDate>May 2026</creationDate>
+    <copyright>Copyright (C) 2026 Cybersalt. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <authorEmail>support@cybersalt.com</authorEmail>
+    <authorUrl>https://cybersalt.com</authorUrl>
+    <version>1.0.0</version>
+    <description>PLG_SYSTEM_CSARTICLESMODULEMAXXED_XML_DESCRIPTION</description>
+    <namespace path="src">Cybersalt\Plugin\System\Csarticlesmodulemaxxed</namespace>
+
+    <scriptfile>script.php</scriptfile>
+
+    <files>
+        <filename>script.php</filename>
+        <folder plugin="csarticlesmodulemaxxed">services</folder>
+        <folder>src</folder>
+        <folder>forms</folder>
+    </files>
+
+    <languages>
+        <language tag="en-GB">language/en-GB/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="en-GB">language/en-GB/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="nl-NL">language/nl-NL/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="nl-NL">language/nl-NL/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="de-DE">language/de-DE/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="de-DE">language/de-DE/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="es-ES">language/es-ES/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="es-ES">language/es-ES/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="fr-FR">language/fr-FR/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="fr-FR">language/fr-FR/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="it-IT">language/it-IT/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="it-IT">language/it-IT/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="pt-BR">language/pt-BR/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="pt-BR">language/pt-BR/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="pl-PL">language/pl-PL/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="pl-PL">language/pl-PL/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="ja-JP">language/ja-JP/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="ja-JP">language/ja-JP/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="zh-CN">language/zh-CN/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="zh-CN">language/zh-CN/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="tr-TR">language/tr-TR/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="tr-TR">language/tr-TR/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="el-GR">language/el-GR/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="el-GR">language/el-GR/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="cs-CZ">language/cs-CZ/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="cs-CZ">language/cs-CZ/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+        <language tag="sv-SE">language/sv-SE/plg_system_csarticlesmodulemaxxed.ini</language>
+        <language tag="sv-SE">language/sv-SE/plg_system_csarticlesmodulemaxxed.sys.ini</language>
+    </languages>
+
+    <updateservers>
+        <server type="extension" priority="1" name="Cybersalt Articles Module Maxxed Updates">https://raw.githubusercontent.com/cybersalt/cs-articles-module-maxxed/main/updates.xml</server>
+    </updateservers>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic" label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELDSET_BASIC_LABEL">
+                <field
+                    name="targets"
+                    type="checkboxes"
+                    label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_TARGETS_LABEL"
+                    description="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_TARGETS_DESC"
+                    default="mod_articles,mod_articles_category,mod_articles_latest"
+                >
+                    <option value="mod_articles">PLG_SYSTEM_CSARTICLESMODULEMAXXED_TARGET_MOD_ARTICLES</option>
+                    <option value="mod_articles_category">PLG_SYSTEM_CSARTICLESMODULEMAXXED_TARGET_MOD_ARTICLES_CATEGORY</option>
+                    <option value="mod_articles_latest">PLG_SYSTEM_CSARTICLESMODULEMAXXED_TARGET_MOD_ARTICLES_LATEST</option>
+                </field>
+            </fieldset>
+
+            <fieldset name="support" label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELDSET_SUPPORT_LABEL">
+                <field
+                    name="support_email"
+                    type="email"
+                    label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_EMAIL_LABEL"
+                    description="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_EMAIL_DESC"
+                    default="support@cybersalt.com"
+                    filter="string"
+                />
+
+                <field
+                    name="support_url"
+                    type="url"
+                    label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_URL_LABEL"
+                    description="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_URL_DESC"
+                    default="https://cybersalt.com"
+                    filter="url"
+                />
+
+                <field
+                    name="support_label"
+                    type="text"
+                    label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_LABEL_LABEL"
+                    description="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_LABEL_DESC"
+                    default="Cybersalt support"
+                    filter="string"
+                />
+            </fieldset>
+        </fields>
+    </config>
+</extension>

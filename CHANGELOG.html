@@ -1,0 +1,37 @@
+<h2>Cybersalt Articles Module Maxxed - Changelog</h2>
+
+<h3>Version 1.0.0 - 2026-05-06</h3>
+
+<h4>New</h4>
+<ul>
+    <li>Initial release.</li>
+    <li>System plugin that adds a <strong>Skip first N articles</strong> setting to Joomla 6's unified <code>mod_articles</code> plus the legacy <code>mod_articles_category</code> and <code>mod_articles_latest</code> modules.</li>
+    <li>Per-module-type opt-out in the plugin's own settings (<em>Apply to modules</em> checkbox group).</li>
+    <li>Count-bump on <code>onAfterModuleList</code> so the SQL fetches enough rows.</li>
+    <li>DOMDocument-based render-strip on <code>onAfterRenderModule</code> scoped by the <code>mod-list</code> / <code>mod-articles-items</code> class selector so it never strips a list inside an article's introtext.</li>
+    <li>Postflight install card pointing the user to the plugin settings + modules manager.</li>
+    <li>Auto-enable on first install.</li>
+    <li>Configurable Support contact (email / URL / label) for "contact support" messages.</li>
+    <li>Update server broadcast &mdash; Joomla's Update Manager will detect new versions automatically.</li>
+    <li>15-language coverage: en-GB translated; 14 other Cybersalt-target languages shipped as <code>TRANSLATION PENDING</code> stubs (PRs welcome).</li>
+    <li>GitHub Actions CI: PHP lint (8.1 + 8.3), manifest XML validation, language-file UTF-8/no-BOM check, zip-build smoke-test on every push.</li>
+</ul>
+
+<h4>Security</h4>
+<ul>
+    <li>Pre-publish security review passed with zero HIGH / zero MEDIUM findings.</li>
+    <li>One LOW (HTML markup in install-card language strings, theoretical XSS neutered by <code>htmlspecialchars</code> but cosmetically broken) fixed before tagging.</li>
+</ul>
+
+<h4>Compatibility</h4>
+<ul>
+    <li>Joomla 5.0+ and Joomla 6.0+ native (no <em>Behaviour - Backward Compatibility</em> plugin required).</li>
+    <li>PHP 8.1+.</li>
+</ul>
+
+<h4>Credits</h4>
+<ul>
+    <li><strong>Bj&oslash;rn Ove Bremnes</strong> &mdash; for wishing an articles offset was a feature in Joomla's core articles module. This plugin is that wish, productionised.</li>
+    <li><strong>The Basic Joomla Tutorials channel family</strong> &mdash; for hosting and helping vibe-code this during a live stream.</li>
+    <li><strong>Tim Davis (<a href="https://cybersalt.com">Cybersalt</a>)</strong> &mdash; author / maintainer.</li>
+</ul>

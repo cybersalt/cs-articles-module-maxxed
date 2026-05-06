@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="params">
+        <fieldset name="basic">
+            <field
+                name="cs_skip_articles"
+                type="number"
+                label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SKIP_LABEL"
+                description="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SKIP_DESC"
+                default="0"
+                min="0"
+                step="1"
+                filter="integer"
+            />
+        </fieldset>
+    </fields>
+</form>
