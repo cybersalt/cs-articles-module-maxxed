@@ -4,6 +4,18 @@ All notable changes to **Cybersalt Articles Module Maxxed** are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-06-17
+
+### 🐞 Fix — Regular Labs Advanced Module Manager compatibility
+
+- **Skip field now appears under AMM.** Regular Labs Advanced Module Manager (AMM) entirely replaces Joomla's core `com_modules` with `com_advancedmodules` — its module edit form is named `com_advancedmodules.module` rather than `com_modules.module`. The plugin's `onContentPrepareForm` handler was doing a strict equality match on `com_modules.module`, so the Skip field never appeared on sites using AMM. The check is now `str_ends_with($formName, '.module')`, which accepts both Joomla core's and AMM's module edit forms. The existing `isTargetEnabled()` whitelist still confines injection to the three supported articles modules, so the looser form-name match doesn't open the field up to other unrelated forms.
+
+### 📦 Compatibility
+
+- Joomla 5.0+ and Joomla 6.0+ native.
+- Compatible with Regular Labs Advanced Module Manager (any version that fires `onContentPrepareForm` from the module edit form).
+- PHP 8.1+.
+
 ## [1.2.0] - 2026-06-17
 
 ### 🐞 Fix — Joomla 6 compatibility

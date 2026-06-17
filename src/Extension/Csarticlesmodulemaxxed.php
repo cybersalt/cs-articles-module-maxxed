@@ -38,7 +38,7 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 
     private const PARAM_KEY = 'cs_skip_articles';
 
-    private const PLUGIN_VERSION = '1.2.0';
+    private const PLUGIN_VERSION = '1.2.1';
 
     private const SUPPORTED_MODULES = [
         'mod_articles',
@@ -121,7 +121,14 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
                 ? $event->getForm()
                 : $this->resolveArg($event, 'subject') ?? $this->resolveArg($event, 'form');
 
-            if (!$form instanceof Form || $form->getName() !== 'com_modules.module') {
+            // Accept any module edit form, not just Joomla core's
+            // `com_modules.module`. Regular Labs Advanced Module Manager
+            // entirely replaces com_modules with com_advancedmodules and
+            // names its form `com_advancedmodules.module`; without this
+            // looser check the Skip field never appeared on sites using
+            // AMM. The isTargetEnabled() check below still confines the
+            // injection to our three supported articles modules.
+            if (!$form instanceof Form || !str_ends_with($form->getName(), '.module')) {
                 return;
             }
 
