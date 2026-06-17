@@ -4,6 +4,17 @@ All notable changes to **Cybersalt Articles Module Maxxed** are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-06-17
+
+### 🔁 Update server
+
+- **Update polling switched from GitHub raw to Cybersalt Release Manager.** The plugin's `<updateservers>` URL in the manifest now points at `https://www.cybersalt.com/index.php?option=com_csreleasemanager&task=api.updatexml&format=raw&element=csarticlesmodulemaxxed` instead of the previous `https://raw.githubusercontent.com/cybersalt/cs-articles-module-maxxed/main/updates.xml`. Release Manager handles version metadata and serves the ZIP via its `api.userdownload` task. Existing v1.1.x – v1.3.0 installs will keep polling the old GitHub raw URL until they upgrade once more; that final hop installs v1.3.1 and from then on they poll Release Manager. The legacy `updates.xml` on GitHub raw is preserved so the cutover is gradual rather than a hard cliff.
+
+### 📦 Compatibility
+
+- Joomla 5.0+ and Joomla 6.0+ native.
+- PHP 8.1+.
+
 ## [1.3.0] - 2026-06-17
 
 ### 🎨 Brand polish

@@ -38,7 +38,7 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 
     private const PARAM_KEY = 'cs_skip_articles';
 
-    private const PLUGIN_VERSION = '1.3.0';
+    private const PLUGIN_VERSION = '1.3.1';
 
     private const SUPPORTED_MODULES = [
         'mod_articles',

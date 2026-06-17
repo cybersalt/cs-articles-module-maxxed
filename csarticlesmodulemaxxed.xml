@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later</license>
     <authorEmail>support@cybersalt.com</authorEmail>
     <authorUrl>https://cybersalt.com</authorUrl>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <description>PLG_SYSTEM_CSARTICLESMODULEMAXXED_XML_DESCRIPTION</description>
     <namespace path="src">Cybersalt\Plugin\System\Csarticlesmodulemaxxed</namespace>
 
@@ -63,7 +63,7 @@
     </languages>
 
     <updateservers>
-        <server type="extension" priority="1" name="Cybersalt Articles Module Maxxed Updates">https://raw.githubusercontent.com/cybersalt/cs-articles-module-maxxed/main/updates.xml</server>
+        <server type="extension" priority="1" name="Cybersalt Articles Module Maxxed Updates">https://www.cybersalt.com/index.php?option=com_csreleasemanager&amp;task=api.updatexml&amp;format=raw&amp;element=csarticlesmodulemaxxed</server>
     </updateservers>
 
     <config>
