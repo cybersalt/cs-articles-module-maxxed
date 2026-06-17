@@ -73,7 +73,7 @@ Result: the module's SQL fetches 10 articles, then the first 5 are stripped from
 ## Build
 
 ```powershell
-& 'C:\Program Files\7-Zip\7z.exe' a -tzip plg_system_csarticlesmodulemaxxed_v1.0.0.zip csarticlesmodulemaxxed.xml script.php services\ src\ forms\ language\
+& 'C:\Program Files\7-Zip\7z.exe' a -tzip plg_system_csarticlesmodulemaxxed_v{version}.zip csarticlesmodulemaxxed.xml script.php services\ src\ forms\ language\
 ```
 
 Build artifacts live in the repo root and are excluded from git via `.gitignore` (`*.zip`).
