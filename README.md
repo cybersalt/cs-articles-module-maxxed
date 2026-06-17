@@ -1,3 +1,5 @@
+<img src="media/logo.svg" width="128" alt="cs-articles-module-maxxed logo" align="left" hspace="16">
+
 # Cybersalt Articles Module Maxxed
 
 A Joomla 5 / Joomla 6 system plugin that adds a **"Skip first N articles"** setting to the core articles modules.

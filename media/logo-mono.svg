@@ -1,0 +1,21 @@
+<!--
+  cs-articles-module-maxxed logo — monochrome variant (v2)
+  Source: Tabler Icons "news" + "bolt" composite (MIT licensed)
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="256"
+  height="256"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="#0102E1"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1 -4 0v-13a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v12a3 3 0 0 0 3 3h11" />
+  <path d="M8 8l4 0" />
+  <path d="M8 12l4 0" />
+  <path d="M8 16l4 0" />
+  <path d="M18.3 1.3l0 2.1l1.8 0l-2.4 3.3l0 -2.1l-1.8 0l2.4 -3.3" stroke-width="1.4" />
+</svg>

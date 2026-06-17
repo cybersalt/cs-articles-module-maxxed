@@ -1,5 +1,37 @@
 <h2>Cybersalt Articles Module Maxxed - Changelog</h2>
 
+<h3>Version 1.3.0 - 2026-06-17</h3>
+
+<h4>Brand polish</h4>
+<ul>
+    <li><strong>Dark-mode white disc behind the logo on every branded surface.</strong> The cobalt+orange artwork loses contrast against Atum&apos;s dark slate-800 background. Every Cybersalt-branded surface in this plugin (install card header, Basic-tab page-info-logo injection, Support-tab brand header) now wraps the logo in a white circular disc in dark mode &mdash; same pattern the cs-siteground-cache header uses. Light mode unchanged.</li>
+    <li><strong>Branded headers on both plugin-settings tabs.</strong> A new custom form field type, <code>BrandheaderField</code>, ships two render variants:
+        <ul>
+            <li><strong><code>variant=&quot;page-info-logo&quot;</code></strong> (on the Basic tab) emits no visible row and instead injects a tiny inline JS snippet that prepends the 44px extension logo to Joomla&apos;s existing plugin-name <code>&lt;h2&gt;</code> heading at the top of the tab. The logo ends up to the left of &quot;Cybersalt - System - Articles Module Maxxed&quot; without duplicating the title. Idempotent (uses a <code>data-cs-logo-injected</code> flag) and scoped to <code>.col-lg-9 &gt; h2</code> so it can&apos;t match an unrelated heading.</li>
+            <li><strong>default</strong> (on the Support tab) renders a full brand-header card: 48px logo + plugin name + &quot;Support contact information&quot; subtitle. Title uses Joomla&apos;s default body text colour so it sits natively against Atum&apos;s light or dark surface; only the card background and the muted subtitle swap on dark mode.</li>
+        </ul>
+    </li>
+    <li><strong>Logo wired into the install package.</strong> The cs-articles-module-maxxed brand logo (Tabler &quot;news&quot; newspaper in cobalt + orange &quot;maxxed&quot; lightning bolt) now installs to <code>media/plg_system_csarticlesmodulemaxxed/</code> via a manifest <code>&lt;media&gt;</code> block. Same logo appears in the README header.</li>
+    <li><strong>Post-install card rebuilt to the locked-in Cybersalt brand spec:</strong>
+        <ul>
+            <li>Extension logo at 56px next to the title in the header</li>
+            <li>Plain-English description paragraph below the title (mirrors the plugin manager listing description)</li>
+            <li>Action buttons in Cybersalt orange (<code>#dc6b1a</code>) so the eye knows where to click</li>
+            <li>CSS-variable theme switching: white header + cobalt title in light Atum; slate header + brand orange title in dark Atum (both <code>data-bs-theme=&quot;dark&quot;</code> and <code>data-color-scheme=&quot;dark&quot;</code> selectors)</li>
+            <li>Footer line with vendor link + bug-report link</li>
+            <li>All CSS scoped to <code>.cs-install-card</code> to avoid leaking into the rest of the admin frame</li>
+        </ul>
+    </li>
+</ul>
+
+<h4>Compatibility</h4>
+<ul>
+    <li>Joomla 5.0+ and Joomla 6.0+ native.</li>
+    <li>PHP 8.1+.</li>
+</ul>
+
+<hr>
+
 <h3>Version 1.2.1 - 2026-06-17</h3>
 
 <h4>Fix — Regular Labs Advanced Module Manager compatibility</h4>

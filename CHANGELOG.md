@@ -4,6 +4,28 @@ All notable changes to **Cybersalt Articles Module Maxxed** are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-06-17
+
+### 🎨 Brand polish
+
+- **Dark-mode white disc behind the logo on every branded surface.** The cobalt+orange artwork loses contrast against Atum's dark slate-800 background. Every Cybersalt-branded surface in this plugin (install card header, Basic-tab page-info-logo injection, Support-tab brand header) now wraps the logo in a white circular disc in dark mode — same pattern the cs-siteground-cache header uses. Light mode unchanged.
+- **Branded headers on both plugin-settings tabs.** A new custom form field type, `BrandheaderField`, ships two render variants:
+  - **`variant="page-info-logo"`** (on the Basic tab) emits no visible row and instead injects a tiny inline JS snippet that prepends the 44px extension logo to Joomla's existing plugin-name `<h2>` heading at the top of the tab. The logo ends up to the left of "Cybersalt - System - Articles Module Maxxed" without duplicating the title. Idempotent (uses a `data-cs-logo-injected` flag) and scoped to `.col-lg-9 > h2` so it can't match an unrelated heading.
+  - **default** (on the Support tab) renders a full brand-header card: 48px logo + plugin name + "Support contact information" subtitle. Title uses Joomla's default body text colour so it sits natively against Atum's light or dark surface; only the card background and the muted subtitle swap on dark mode.
+- **Logo wired into the install package.** The cs-articles-module-maxxed brand logo (Tabler "news" newspaper in cobalt + orange "maxxed" lightning bolt) now installs to `media/plg_system_csarticlesmodulemaxxed/` via a manifest `<media>` block. Same logo appears in the README header.
+- **Post-install card rebuilt to the locked-in Cybersalt brand spec** (Joomla-Brain `JOOMLA-EXTENSION-WISHLIST.md` v2026-05-06):
+  - Extension logo at 56px next to the title in the header
+  - Plain-English description paragraph below the title (mirrors the plugin manager listing description)
+  - Action buttons in Cybersalt orange (`#dc6b1a`) so the eye knows where to click
+  - CSS-variable theme switching: white header + cobalt title in light Atum; slate header + brand orange title in dark Atum (both `data-bs-theme="dark"` and `data-color-scheme="dark"` selectors)
+  - Footer line with vendor link + bug-report link
+  - All CSS scoped to `.cs-install-card` to avoid leaking into the rest of the admin frame
+
+### 📦 Compatibility
+
+- Joomla 5.0+ and Joomla 6.0+ native.
+- PHP 8.1+.
+
 ## [1.2.1] - 2026-06-17
 
 ### 🐞 Fix — Regular Labs Advanced Module Manager compatibility
