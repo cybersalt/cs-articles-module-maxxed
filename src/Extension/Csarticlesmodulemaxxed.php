@@ -11,6 +11,9 @@ namespace Cybersalt\Plugin\System\Csarticlesmodulemaxxed\Extension;
 
 \defined('_JEXEC') or die;
 
+use Joomla\CMS\Event\Model\PrepareFormEvent;
+use Joomla\CMS\Event\Module\AfterModuleListEvent;
+use Joomla\CMS\Event\Module\AfterRenderModuleEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
@@ -28,9 +31,14 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 {
     use DatabaseAwareTrait;
 
+    // Force-load the plugin's own .ini at every event firing — without this,
+    // Joomla only auto-loads the .sys.ini globally, and the Skip field's label
+    // and description render as raw language constants on the module edit form.
+    protected $autoloadLanguage = true;
+
     private const PARAM_KEY = 'cs_skip_articles';
 
-    private const PLUGIN_VERSION = '1.1.1';
+    private const PLUGIN_VERSION = '1.2.0';
 
     private const SUPPORTED_MODULES = [
         'mod_articles',
@@ -106,86 +114,118 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 
     public function onContentPrepareForm(Event $event): void
     {
-        $form = $this->resolveForm($event);
+        try {
+            // Prefer J5/J6 typed-event getters; fall back to argument-array
+            // access for any rare caller that dispatches a generic Event.
+            $form = $event instanceof PrepareFormEvent
+                ? $event->getForm()
+                : $this->resolveArg($event, 'subject') ?? $this->resolveArg($event, 'form');
 
-        if (!$form instanceof Form || $form->getName() !== 'com_modules.module') {
-            return;
+            if (!$form instanceof Form || $form->getName() !== 'com_modules.module') {
+                return;
+            }
+
+            $data = $event instanceof PrepareFormEvent
+                ? $event->getData()
+                : $this->resolveArg($event, 'data');
+
+            $element = $this->extractModuleElement($data);
+
+            if ($element === '' || !$this->isTargetEnabled($element)) {
+                return;
+            }
+
+            Form::addFormPath(\dirname(__DIR__, 2) . '/forms');
+            $form->loadFile('skip-articles-field', false);
+        } catch (\Throwable $e) {
+            // Never break the module edit form because of this plugin —
+            // log and bail out so the admin form still renders.
+            Log::add(
+                'csarticlesmodulemaxxed: onContentPrepareForm failed: ' . $e->getMessage(),
+                Log::WARNING,
+                'plg_system_csarticlesmodulemaxxed'
+            );
         }
-
-        $data    = $this->resolveArg($event, 'data');
-        $element = $this->extractModuleElement($data);
-
-        if ($element === '' || !$this->isTargetEnabled($element)) {
-            return;
-        }
-
-        // The plugin's frontend .ini doesn't auto-load on the module edit form
-        // (Joomla only auto-loads .sys.ini globally), so the field's label and
-        // description would render as raw language constants without this.
-        $this->loadLanguage();
-
-        Form::addFormPath(\dirname(__DIR__, 2) . '/forms');
-        $form->loadFile('skip-articles-field', false);
     }
 
     public function onAfterModuleList(Event $event): void
     {
-        $modules = $this->resolveArg($event, 'modules');
+        try {
+            $modules = $event instanceof AfterModuleListEvent
+                ? $event->getModules()
+                : $this->resolveArg($event, 'modules');
 
-        if (!\is_array($modules)) {
-            return;
-        }
-
-        foreach ($modules as $module) {
-            if (!\is_object($module)) {
-                continue;
+            if (!\is_array($modules)) {
+                return;
             }
 
-            $element = $module->module ?? '';
+            foreach ($modules as $module) {
+                if (!\is_object($module)) {
+                    continue;
+                }
 
-            if (!\is_string($element) || !$this->isTargetEnabled($element)) {
-                continue;
+                $element = $module->module ?? '';
+
+                if (!\is_string($element) || !$this->isTargetEnabled($element)) {
+                    continue;
+                }
+
+                $params = $this->decodeParams($module->params ?? '');
+                $skip   = (int) ($params[self::PARAM_KEY] ?? 0);
+
+                if ($skip <= 0) {
+                    continue;
+                }
+
+                $count = (int) ($params['count'] ?? 0);
+
+                // count = 0 means "all" in mod_articles_category and friends — leave it alone.
+                if ($count > 0) {
+                    $params['count'] = $count + $skip;
+                    $module->params  = json_encode($params);
+                }
             }
-
-            $params = $this->decodeParams($module->params ?? '');
-            $skip   = (int) ($params[self::PARAM_KEY] ?? 0);
-
-            if ($skip <= 0) {
-                continue;
-            }
-
-            $count = (int) ($params['count'] ?? 0);
-
-            // count = 0 means "all" in mod_articles_category and friends — leave it alone.
-            if ($count > 0) {
-                $params['count'] = $count + $skip;
-                $module->params  = json_encode($params);
-            }
+        } catch (\Throwable $e) {
+            Log::add(
+                'csarticlesmodulemaxxed: onAfterModuleList failed: ' . $e->getMessage(),
+                Log::WARNING,
+                'plg_system_csarticlesmodulemaxxed'
+            );
         }
     }
 
     public function onAfterRenderModule(Event $event): void
     {
-        $module = $this->resolveArg($event, 'subject');
+        try {
+            $module = $event instanceof AfterRenderModuleEvent
+                ? $event->getModule()
+                : $this->resolveArg($event, 'subject');
 
-        if (!\is_object($module)) {
-            return;
+            if (!\is_object($module)) {
+                return;
+            }
+
+            $element = $module->module ?? '';
+
+            if (!\is_string($element) || !$this->isTargetEnabled($element)) {
+                return;
+            }
+
+            $params = $this->decodeParams($module->params ?? '');
+            $skip   = (int) ($params[self::PARAM_KEY] ?? 0);
+
+            if ($skip <= 0 || empty($module->content)) {
+                return;
+            }
+
+            $module->content = $this->stripFirstNListItems($module->content, $skip);
+        } catch (\Throwable $e) {
+            Log::add(
+                'csarticlesmodulemaxxed: onAfterRenderModule failed: ' . $e->getMessage(),
+                Log::WARNING,
+                'plg_system_csarticlesmodulemaxxed'
+            );
         }
-
-        $element = $module->module ?? '';
-
-        if (!\is_string($element) || !$this->isTargetEnabled($element)) {
-            return;
-        }
-
-        $params = $this->decodeParams($module->params ?? '');
-        $skip   = (int) ($params[self::PARAM_KEY] ?? 0);
-
-        if ($skip <= 0 || empty($module->content)) {
-            return;
-        }
-
-        $module->content = $this->stripFirstNListItems($module->content, $skip);
     }
 
     /**
@@ -272,19 +312,11 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
         return $inner;
     }
 
-    private function resolveForm(Event $event): ?Form
-    {
-        // Concrete PrepareFormEvent classes carry the form as 'subject'; legacy
-        // events sometimes name it 'form'. Try both.
-        $form = $this->resolveArg($event, 'subject') ?? $this->resolveArg($event, 'form');
-
-        return $form instanceof Form ? $form : null;
-    }
-
     private function resolveArg(Event $event, string $name): mixed
     {
-        // Joomla 5/6 concrete events expose getX() helpers; the underlying
-        // arguments array still works for everything.
+        // Fallback for generic Events (legacy triggerEvent callers). J5/J6
+        // typed events are handled via their getter methods directly in the
+        // event handlers above.
         $args = $event->getArguments();
 
         return $args[$name] ?? null;

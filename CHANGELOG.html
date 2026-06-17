@@ -1,5 +1,22 @@
 <h2>Cybersalt Articles Module Maxxed - Changelog</h2>
 
+<h3>Version 1.2.0 - 2026-06-17</h3>
+
+<h4>Fix — Joomla 6 compatibility</h4>
+<ul>
+    <li><strong>Skip field now appears on the article module edit form on Joomla 6.</strong> The plugin's <code>onContentPrepareForm</code>, <code>onAfterModuleList</code>, and <code>onAfterRenderModule</code> handlers were reading event arguments via the legacy generic-event API. On Joomla 6 the dispatcher delivers these as concrete typed events (<code>PrepareFormEvent</code>, <code>AfterModuleListEvent</code>, <code>AfterRenderModuleEvent</code>), and reaching into the underlying arguments array was unreliable. Handlers now use the typed-event getter methods (<code>getForm()</code>, <code>getData()</code>, <code>getModules()</code>, <code>getModule()</code>) with a generic-event fallback for any rare legacy caller.</li>
+    <li><strong><code>$autoloadLanguage = true</code>.</strong> Joomla only auto-loads a plugin's <code>.sys.ini</code> globally; the <code>.ini</code> only loaded inside the plugin's own settings page on J5 and not at all reliably on J6. With this flag set, the plugin's <code>.ini</code> is loaded automatically every time the plugin's events fire, so the Skip field's label and description render correctly on the module edit form on both J5 and J6.</li>
+    <li><strong>Defensive try/catch around all three module-form/render handlers.</strong> A throwable in the plugin can no longer break the module edit form or a frontend page render &mdash; failures are logged to <code>plg_system_csarticlesmodulemaxxed</code> and the handler bails out silently.</li>
+</ul>
+
+<h4>Compatibility</h4>
+<ul>
+    <li>Joomla 5.0+ and Joomla 6.0+ native &mdash; confirmed against the typed-event API in both versions.</li>
+    <li>PHP 8.1+.</li>
+</ul>
+
+<hr>
+
 <h3>Version 1.1.1 - 2026-05-06</h3>
 
 <h4>Security / Hardening</h4>
