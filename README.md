@@ -24,7 +24,7 @@ The strip step targets `<ul>` / `<ol>` elements whose class contains `mod-list` 
 
 | Module | Joomla 5 | Joomla 6 |
 |---|:---:|:---:|
-| `mod_articles` (the unified module new in J6) | — | ✅ |
+| `mod_articles` (the unified module, added in J5.2) | ✅ 5.2+ | ✅ |
 | `mod_articles_category` (legacy) | ✅ | ✅ |
 | `mod_articles_latest` (legacy) | ✅ | ✅ |
 
