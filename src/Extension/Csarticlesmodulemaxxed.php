@@ -38,7 +38,7 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 
     private const PARAM_KEY = 'cs_skip_articles';
 
-    private const PLUGIN_VERSION = '1.3.1';
+    private const PLUGIN_VERSION = '1.4.0';
 
     private const SUPPORTED_MODULES = [
         'mod_articles',
@@ -144,6 +144,7 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 
             Form::addFormPath(\dirname(__DIR__, 2) . '/forms');
             $form->loadFile('skip-articles-field', false);
+            $this->placeSkipFieldAfterCount($form);
         } catch (\Throwable $e) {
             // Never break the module edit form because of this plugin —
             // log and bail out so the admin form still renders.
@@ -279,10 +280,14 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 
         $lists = $xpath->query($primaryQuery, $wrap);
 
-        if ($lists->length === 0) {
-            $lists = $xpath->query('.//ul | .//ol', $wrap);
+        if ($lists->length > 0) {
+            return $this->stripFromArticleLists($doc, $wrap, $lists, $n);
         }
 
+        // No class-marked list (template override with its own markup): keep
+        // the original behaviour and trim the first plain list that has more
+        // than $n items.
+        $lists    = $xpath->query('.//ul | .//ol', $wrap);
         $stripped = false;
 
         foreach ($lists as $list) {
@@ -311,12 +316,154 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
             return $html;
         }
 
+        return $this->innerHtml($doc, $wrap);
+    }
+
+    /**
+     * Skip the first $n articles across the core layouts' article lists, in
+     * page order. Handles grouped output too: mod_articles renders one
+     * `ul.mod-articles-items` per group, and mod_articles_category renders an
+     * outer `ul.mod-list` whose items are groups, each holding its own <ul>.
+     * Groups left without articles are removed with their heading. If no
+     * article is left at all, an empty string is returned so Joomla's module
+     * chrome hides the module instead of showing an empty box.
+     */
+    private function stripFromArticleLists(\DOMDocument $doc, \DOMElement $wrap, \DOMNodeList $lists, int $n): string
+    {
+        $listNodes = [];
+
+        foreach ($lists as $list) {
+            // Ignore a marked list nested inside another marked list; its
+            // items are reached through the outer one.
+            $nested = false;
+
+            for ($p = $list->parentNode; $p !== null && $p !== $wrap; $p = $p->parentNode) {
+                foreach ($listNodes as $outer) {
+                    if ($p === $outer) {
+                        $nested = true;
+                        break 2;
+                    }
+                }
+            }
+
+            if (!$nested) {
+                $listNodes[] = $list;
+            }
+        }
+
+        // Collect article <li> items in document order. A direct <li> that
+        // itself holds a list (a mod_articles_category group) contributes the
+        // items of that inner list instead of counting as one article.
+        $items = [];
+
+        foreach ($listNodes as $list) {
+            foreach ($this->childElements($list, 'li') as $li) {
+                $inner = array_merge($this->childElements($li, 'ul'), $this->childElements($li, 'ol'));
+
+                if ($inner === []) {
+                    $items[] = $li;
+                    continue;
+                }
+
+                foreach ($inner as $innerList) {
+                    foreach ($this->childElements($innerList, 'li') as $innerLi) {
+                        $items[] = $innerLi;
+                    }
+                }
+            }
+        }
+
+        if ($items === []) {
+            return $this->innerHtml($doc, $wrap);
+        }
+
+        $remove = \array_slice($items, 0, $n);
+
+        foreach ($remove as $li) {
+            $parentList = $li->parentNode;
+            $parentList->removeChild($li);
+
+            if ($this->childElements($parentList, 'li') !== []) {
+                continue;
+            }
+
+            // The list is now empty: drop its group container as well.
+            $group = $parentList->parentNode;
+
+            if ($group instanceof \DOMElement && strtolower($group->nodeName) === 'li') {
+                // mod_articles_category: <li><div>Group</div><ul>…</ul></li>
+                $group->parentNode->removeChild($group);
+            } elseif (
+                $group instanceof \DOMElement
+                && str_contains(' ' . $group->getAttribute('class') . ' ', ' mod-articles-group ')
+            ) {
+                // mod_articles: <div class="mod-articles-group"><h4>Group</h4><ul>…</ul></div>
+                $group->parentNode->removeChild($group);
+            }
+        }
+
+        if (\count($items) <= $n) {
+            return '';
+        }
+
+        return $this->innerHtml($doc, $wrap);
+    }
+
+    /**
+     * @return \DOMElement[]
+     */
+    private function childElements(\DOMNode $node, string $tag): array
+    {
+        $out = [];
+
+        foreach ($node->childNodes as $child) {
+            if ($child instanceof \DOMElement && strtolower($child->nodeName) === $tag) {
+                $out[] = $child;
+            }
+        }
+
+        return $out;
+    }
+
+    private function innerHtml(\DOMDocument $doc, \DOMElement $wrap): string
+    {
         $inner = '';
+
         foreach ($wrap->childNodes as $child) {
             $inner .= $doc->saveHTML($child);
         }
 
         return $inner;
+    }
+
+    /**
+     * Move the injected Skip field so it sits directly after the module's own
+     * article-count field ("Articles to Display" / "Count"), in whichever tab
+     * that field lives. Leaves the field where it is if no count field exists.
+     */
+    private function placeSkipFieldAfterCount(Form $form): void
+    {
+        $xml = $form->getXml();
+
+        if (!$xml instanceof \SimpleXMLElement) {
+            return;
+        }
+
+        $skip  = $xml->xpath('//fields[@name="params"]//field[@name="' . self::PARAM_KEY . '"]');
+        $count = $xml->xpath('//fields[@name="params"]//field[@name="count"]');
+
+        if (empty($skip) || empty($count)) {
+            return;
+        }
+
+        $skipNode  = dom_import_simplexml($skip[0]);
+        $countNode = dom_import_simplexml($count[0]);
+
+        if ($skipNode->ownerDocument !== $countNode->ownerDocument || $countNode->parentNode === null) {
+            return;
+        }
+
+        $countNode->parentNode->insertBefore($skipNode, $countNode->nextSibling);
     }
 
     private function resolveArg(Event $event, string $name): mixed
@@ -466,6 +613,7 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
         $siteUrl       = rtrim(Uri::root(), '/');
         $supportEmail  = trim((string) $this->params->get('support_email', 'support@cybersalt.com'));
         $supportLabel  = trim((string) $this->params->get('support_label', 'Cybersalt support')) ?: 'Cybersalt support';
+        $supportUrl    = trim((string) $this->params->get('support_url', ''));
         $pluginVersion = self::PLUGIN_VERSION;
 
         $this->loadLanguage();
@@ -492,7 +640,8 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
                     $toVersion,
                     $pluginVersion,
                     $supportEmail,
-                    $supportLabel
+                    $supportLabel,
+                    $supportUrl
                 ));
                 $thisMail->Send();
             } catch (\Throwable $e) {
@@ -560,7 +709,8 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
         string $toVersion,
         string $pluginVersion,
         string $supportEmail,
-        string $supportLabel
+        string $supportLabel,
+        string $supportUrl = ''
     ): string {
         $e = static fn (string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
@@ -581,6 +731,13 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
         $issuesUrl   = 'https://github.com/cybersalt/cs-articles-module-maxxed/issues';
         $repoUrl     = 'https://github.com/cybersalt/cs-articles-module-maxxed';
 
+        // Optional "Support URL" setting, shown after the support email.
+        $supportLink = '';
+
+        if ($supportUrl !== '' && preg_match('#^https?://#i', $supportUrl)) {
+            $supportLink = ' &mdash; <a href="' . $e($supportUrl) . '">' . $e($supportUrl) . '</a>';
+        }
+
         return <<<HTML
 <!DOCTYPE html>
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#222;max-width:640px;margin:0 auto;padding:24px;">
@@ -597,7 +754,7 @@ final class Csarticlesmodulemaxxed extends CMSPlugin implements SubscriberInterf
 <ul>
     <li>{$e($broken1)} &mdash; <a href="{$releasesUrl}">{$releasesUrl}</a></li>
     <li>{$e($broken2)} &mdash; <a href="{$issuesUrl}">{$issuesUrl}</a></li>
-    <li>{$e($broken3)}</li>
+    <li>{$e($broken3)}{$supportLink}</li>
 </ul>
 <p style="margin-top:24px;color:#666;font-size:13px;">{$e($footer)}</p>
 <hr style="margin-top:24px;border:none;border-top:1px solid #ddd;">

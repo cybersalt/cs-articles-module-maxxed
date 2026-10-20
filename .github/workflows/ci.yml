@@ -91,6 +91,9 @@ jobs:
             src \
             forms \
             language \
+            media \
+            CHANGELOG.md \
+            CHANGELOG.html \
             -x '*/.gitkeep'
 
       - name: Verify zip structure
@@ -99,6 +102,9 @@ jobs:
           unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q csarticlesmodulemaxxed.xml
           unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q services/provider.php
           unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q src/Extension/Csarticlesmodulemaxxed.php
+          unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q media/logo.svg
+          unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q CHANGELOG.md
+          unzip -l dist/plg_system_csarticlesmodulemaxxed_ci.zip | grep -q CHANGELOG.html
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

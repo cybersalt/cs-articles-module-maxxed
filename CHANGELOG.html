@@ -1,5 +1,34 @@
 <h2>Cybersalt Articles Module Maxxed - Changelog</h2>
 
+<h3>Version 1.4.0 - 2026-10-20</h3>
+
+<h4>Fixes</h4>
+<ul>
+    <li><strong>Grouped modules now skip correctly.</strong> With <em>Grouping</em> turned on (by month, year, author, category or tag in the Articles module, or grouping in Articles - Category), the module renders one list per group. 1.3.x only trimmed a single list that held more than N items, so on grouped modules it usually trimmed nothing and showed the very articles it was meant to skip. The skip now counts articles across all groups in the order the module displays them, and a group left with no articles is removed together with its heading.</li>
+    <li><strong>Skipping as many articles as exist (or more) no longer shows them all.</strong> If a module had N or fewer articles to show, 1.3.x left the list untouched, so every article it should have skipped appeared. Now they are all skipped, and when nothing is left the module is not shown at all (Joomla hides a module with empty output).</li>
+</ul>
+
+<h4>Admin</h4>
+<ul>
+    <li><strong>The Skip field now sits directly under the module&apos;s own article count</strong> (&quot;Articles to Display&quot; in Articles and Articles - Latest, &quot;Count&quot; on the Filtering Options tab of Articles - Category). It used to be added at the end of the Module tab.</li>
+    <li><strong>Plugin name follows Joomla&apos;s plugin naming convention:</strong> <em>System - Cybersalt Articles Module Maxxed</em> (was <em>Cybersalt - System - Articles Module Maxxed</em>). The type word stays translated in each language.</li>
+    <li><strong>&quot;Apply to modules&quot; label corrected:</strong> the unified Articles module (<code>mod_articles</code>) ships with Joomla 5.2 and later, not only Joomla 6.</li>
+    <li><strong>The &quot;Email Super Users when Joomla is updated&quot; switch shows its state correctly.</strong> Its Yes/No options were in the wrong order for Joomla&apos;s switcher, so &quot;Yes&quot; was drawn in the grey &quot;off&quot; style.</li>
+</ul>
+
+<h4>Other</h4>
+<ul>
+    <li><strong>The Support URL setting is now used.</strong> It appears after the support email in the one-time &quot;Joomla was updated&quot; email. Its default is now the Cybersalt support request form.</li>
+</ul>
+
+<h4>Compatibility</h4>
+<ul>
+    <li>Joomla 5.0+ and Joomla 6.0+ native (the Articles module needs Joomla 5.2+).</li>
+    <li>PHP 8.1+.</li>
+</ul>
+
+<hr>
+
 <h3>Version 1.3.1 - 2026-06-17</h3>
 
 <h4>Update server</h4>

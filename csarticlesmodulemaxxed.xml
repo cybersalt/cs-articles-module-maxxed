@@ -2,12 +2,12 @@
 <extension type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_CSARTICLESMODULEMAXXED</name>
     <author>Cybersalt</author>
-    <creationDate>May 2026</creationDate>
+    <creationDate>October 2026</creationDate>
     <copyright>Copyright (C) 2026 Cybersalt. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later</license>
     <authorEmail>support@cybersalt.com</authorEmail>
     <authorUrl>https://cybersalt.com</authorUrl>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
     <description>PLG_SYSTEM_CSARTICLESMODULEMAXXED_XML_DESCRIPTION</description>
     <namespace path="src">Cybersalt\Plugin\System\Csarticlesmodulemaxxed</namespace>
 
@@ -101,8 +101,8 @@
                     default="1"
                     filter="integer"
                 >
-                    <option value="1">JYES</option>
                     <option value="0">JNO</option>
+                    <option value="1">JYES</option>
                 </field>
 
                 <!-- Internal: last seen Joomla short version. Hidden field so it survives the
@@ -136,7 +136,7 @@
                     type="url"
                     label="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_URL_LABEL"
                     description="PLG_SYSTEM_CSARTICLESMODULEMAXXED_FIELD_SUPPORT_URL_DESC"
-                    default="https://cybersalt.com"
+                    default="https://www.cybersalt.com/services/support-request-form"
                     filter="url"
                 />
 
